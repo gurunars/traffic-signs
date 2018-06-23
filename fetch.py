@@ -43,7 +43,7 @@ for section in sections:
     links += section.xpath('*/a')
     links += section.xpath('a')
 
-urls = [
+links = [
     {
         "title": link.xpath("text()")[0],
         "url": link.xpath("@href")[0]
@@ -51,15 +51,16 @@ urls = [
     for link in links
 ]
 
-print(urls)
-
-"""
-ids = []
-for url in urls:
-    page = fetch(url)
-    ids += [
-        remove_prefix(href, PATTERN) for href in page.xpath("//a/@href") if href.startswith(PATTERN)
-    ]
+sections = []
+for link in links:
+    page = fetch(link["url"])
+    sections.append({
+        "title": link["title"],
+        "id": [
+            remove_prefix(href, PATTERN)
+            for href in page.xpath("//a/@href") if href.startswith(PATTERN)
+        ][0]
+    })
 
 
 def get_photos(pk):
@@ -110,4 +111,3 @@ import codecs
 payload = json.dumps(fetched, ensure_ascii=False, encoding="utf-8")
 with codecs.open("index.json", "w", encoding="utf-8") as fil:
     fil.write(payload)
-"""
