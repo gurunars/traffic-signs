@@ -92,5 +92,7 @@ for pk in ids:
             name=name
         ))
 
-with open("index.json", "w") as fil:
-    json.dump(fetched, fil)
+import codecs
+payload = json.dumps(fetched, ensure_ascii=False, encoding="utf-8")
+with codecs.open("index.json", "w", encoding="utf-8") as fil:
+    fil.write(payload)
