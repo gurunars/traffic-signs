@@ -10,7 +10,6 @@ def fetch(path):
     return html.fromstring(requests.get(DOMAIN + path).content)
 
 
-"""
 tree = fetch("/web/en/road-network/traffic-signs")
 
 sections = tree.xpath('//div[@class="section-content"]')
@@ -29,4 +28,4 @@ for url in urls:
         href for href in page.xpath("//a/@href") if href.startswith(PATTERN)
     ]
 
-"""
+print(hrefs)
