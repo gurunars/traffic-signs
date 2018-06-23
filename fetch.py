@@ -54,14 +54,17 @@ text = remove_suffix(
     remove_prefix(resp.text, "jsonFlickrApi("),
     ")"
 )
-data = json.loads(text).get("photoset").get("photo")
 
-pprint(data)
-"""
-https://api.flickr.com/services/rest/?=&format=json&jsoncallback=jQuery111307133405740796193_1529785762116&_=1529785762117
+photos = []
 
-URL = "https://www.flickr.com/photos/liikennevirasto/sets/72157658087746553"
-doc = requests.get(URL).text
-print(doc.split("\n"))
+for item in json.loads(text).get("photoset").get("photo"):
+    desc = item.get("description").get("_content")
+    parts = desc.split("\n")
+    title = parts[1]
+    url = item.get("url_q")
+    photos.append(dict(
+        title=title,
+        url=url
+    ))
 
-"""
+pprint(photos)
