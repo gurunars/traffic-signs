@@ -107,7 +107,7 @@ for section in sections:
             title = "UNKNOWN"
         name = download_file(photo["url"])
         fetched.append(dict(
-            title=photo["title"],
+            title=title,
             name=name
         ))
     deck.append({
