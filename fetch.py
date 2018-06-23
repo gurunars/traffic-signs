@@ -102,6 +102,9 @@ for section in sections:
     fetched = []
     for photo in get_photos(section["id"]):
         print(photo)
+        title = photo["title"]
+        if title.startswith("<a href="):
+            title = "UNKNOWN"
         name = download_file(photo["url"])
         fetched.append(dict(
             title=photo["title"],
