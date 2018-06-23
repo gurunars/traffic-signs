@@ -7,9 +7,16 @@ from pprint import pprint
 PATTERN = "https://www.flickr.com/photos/liikennevirasto/albums/"
 DOMAIN = "https://www.liikennevirasto.fi"
 
-"""
 def fetch(path):
     return html.fromstring(requests.get(DOMAIN + path).content)
+
+
+def remove_prefix(string, prefix):
+    return string[len(prefix):] if string.startswith(prefix) else string
+
+
+def remove_suffix(string, suffix):
+    return string[:-len(suffix)] if string.endswith(suffix) else string
 
 
 tree = fetch("/web/en/road-network/traffic-signs")
@@ -22,24 +29,15 @@ for section in sections:
     urls += section.xpath('*/a/@href')
     urls += section.xpath('a/@href')
 
-hrefs = []
+ids = []
 for url in urls:
-    print("Proc: " + url)
     page = fetch(url)
-    hrefs += [
-        href for href in page.xpath("//a/@href") if href.startswith(PATTERN)
+    ids += [
+        remove_prefix(href, PATTERN) for href in page.xpath("//a/@href") if href.startswith(PATTERN)
     ]
 
-print(hrefs)
-"""
 
 
-def remove_prefix(string, prefix):
-    return string[len(prefix):] if string.startswith(prefix) else string
-
-
-def remove_suffix(string, suffix):
-    return string[:-len(suffix)] if string.endswith(suffix) else string
 
 
 resp = requests.get("https://api.flickr.com/services/rest", {
