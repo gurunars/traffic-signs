@@ -37,12 +37,23 @@ tree = fetch("/web/en/road-network/traffic-signs")
 
 sections = tree.xpath('//div[@class="section-content"]')
 
-urls = []
+links = []
 
 for section in sections:
-    urls += section.xpath('*/a/@href')
-    urls += section.xpath('a/@href')
+    links += section.xpath('*/a')
+    links += section.xpath('a')
 
+urls = [
+    {
+        "title": link.xpath("text()")[0],
+        "url": link.xpath("@href")[0]
+    }
+    for link in links
+]
+
+print(urls)
+
+"""
 ids = []
 for url in urls:
     page = fetch(url)
@@ -99,3 +110,4 @@ import codecs
 payload = json.dumps(fetched, ensure_ascii=False, encoding="utf-8")
 with codecs.open("index.json", "w", encoding="utf-8") as fil:
     fil.write(payload)
+"""
