@@ -66,7 +66,12 @@ def get_photos(pk):
     for item in json.loads(text).get("photoset").get("photo"):
         desc = item.get("description").get("_content")
         parts = desc.split("\n")
-        title = parts[1]
+        if len(parts) >= 2:
+            title = parts[1]
+        elif parts:
+            title = parts[0]
+        else:
+            title = "UNKNOWN"
         url = item.get("url_q")
         photos.append(dict(
             title=title,
