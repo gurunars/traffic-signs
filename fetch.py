@@ -54,7 +54,7 @@ text = remove_suffix(
     remove_prefix(resp.text, "jsonFlickrApi("),
     ")"
 )
-data = json.loads(text)
+data = json.loads(text).get("photoset").get("photo")
 
 pprint(data)
 """
