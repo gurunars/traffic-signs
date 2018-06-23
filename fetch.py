@@ -7,8 +7,7 @@ DOMAIN = "https://www.liikennevirasto.fi"
 
 
 def fetch(path):
-    page = requests.get(DOMAIN + path)
-    return html.fromstring(page.content)
+    return html.fromstring(requests.get(DOMAIN + path).content)
 
 
 """
