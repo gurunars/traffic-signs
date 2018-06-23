@@ -37,32 +37,30 @@ for url in urls:
     ]
 
 
+def get_photos(pk):
+    resp = requests.get("https://api.flickr.com/services/rest", {
+        "method": "flickr.photosets.getPhotos",
+        "api_key": "2f0e634b471fdb47446abcb9c5afebdc",
+        "photoset_id": pk,
+        "extras": "description,url_q",
+        "format": "json"
+    })
 
+    text = remove_suffix(
+        remove_prefix(resp.text, "jsonFlickrApi("),
+        ")"
+    )
 
-
-resp = requests.get("https://api.flickr.com/services/rest", {
-    "method": "flickr.photosets.getPhotos",
-    "api_key": "2f0e634b471fdb47446abcb9c5afebdc",
-    "photoset_id": "72157658087746553",
-    "extras": "description,url_q",
-    "format": "json"
-})
-
-text = remove_suffix(
-    remove_prefix(resp.text, "jsonFlickrApi("),
-    ")"
-)
-
-photos = []
-
-for item in json.loads(text).get("photoset").get("photo"):
-    desc = item.get("description").get("_content")
-    parts = desc.split("\n")
-    title = parts[1]
-    url = item.get("url_q")
-    photos.append(dict(
-        title=title,
-        url=url
-    ))
+    photos = []
+    for item in json.loads(text).get("photoset").get("photo"):
+        desc = item.get("description").get("_content")
+        parts = desc.split("\n")
+        title = parts[1]
+        url = item.get("url_q")
+        photos.append(dict(
+            title=title,
+            url=url
+        ))
+    return photos
 
 pprint(photos)
