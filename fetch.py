@@ -97,15 +97,20 @@ def get_photos(pk):
 import os
 os.chdir("cards")
 
-fetched = []
-for pk in ids:
-    for photo in get_photos(pk):
+deck = []
+for section in sections:
+    fetched = []
+    for photo in get_photos(section["id"]):
         print(photo)
         name = download_file(photo["url"])
         fetched.append(dict(
             title=photo["title"],
             name=name
         ))
+    deck.append({
+        "title": section["title"],
+        "cards": fetched
+    })
 
 import codecs
 payload = json.dumps(fetched, ensure_ascii=False, encoding="utf-8")
