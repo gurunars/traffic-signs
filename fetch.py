@@ -113,6 +113,6 @@ for section in sections:
     })
 
 import codecs
-payload = json.dumps(fetched, ensure_ascii=False, encoding="utf-8")
+payload = json.dumps(fetched, ensure_ascii=False, indent=2)
 with codecs.open("index.json", "w", encoding="utf-8") as fil:
     fil.write(payload)
