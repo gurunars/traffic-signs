@@ -3,6 +3,7 @@ from lxml import html
 import requests
 import os
 from pprint import pprint
+import genanki
 
 
 PATTERN = "https://www.flickr.com/photos/liikennevirasto/albums/"
@@ -97,7 +98,7 @@ def get_photos(pk):
 import os
 os.chdir("cards")
 
-deck = []
+decks = []
 for section in sections:
     fetched = []
     for photo in get_photos(section["id"]):
@@ -110,12 +111,23 @@ for section in sections:
             title=title,
             name=name
         ))
-    deck.append({
+    decks.append({
         "title": section["title"],
         "cards": fetched
     })
 
+
+count = 1
+card_count = 1
+for deck in decks:
+    genanki.Deck(count, deck["title"])
+    count += 1
+    for card in deck["cards"]:
+        card_count += 1
+
+"""
 import codecs
 payload = json.dumps(deck, ensure_ascii=False, indent=2)
 with codecs.open("index.json", "w", encoding="utf-8") as fil:
     fil.write(payload)
+"""
