@@ -7,6 +7,7 @@ from pprint import pprint
 PATTERN = "https://www.flickr.com/photos/liikennevirasto/albums/"
 DOMAIN = "https://www.liikennevirasto.fi"
 
+
 def fetch(path):
     return html.fromstring(requests.get(DOMAIN + path).content)
 
@@ -17,6 +18,16 @@ def remove_prefix(string, prefix):
 
 def remove_suffix(string, suffix):
     return string[:-len(suffix)] if string.endswith(suffix) else string
+
+
+def download_file(url):
+    local_filename = url.split('/')[-1]
+    r = requests.get(url, stream=True)
+    with open(local_filename, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
+    return local_filename
 
 
 tree = fetch("/web/en/road-network/traffic-signs")
@@ -63,4 +74,18 @@ def get_photos(pk):
         ))
     return photos
 
-pprint(photos)
+import os
+os.chdir("cards")
+
+fetched = []
+for pk in ids:
+    for photo in get_photos(pk):
+        print(photo)
+        name = download_file(photo["url"])
+        fetched.append(dict(
+            title=photo["title"],
+            name=name
+        ))
+
+with open("index.json", "w") as fil:
+    json.dump(fetched, fil)
