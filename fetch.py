@@ -1,6 +1,7 @@
 import json
 from lxml import html
 import requests
+import os
 from pprint import pprint
 
 
@@ -22,6 +23,8 @@ def remove_suffix(string, suffix):
 
 def download_file(url):
     local_filename = url.split('/')[-1]
+    if os.path.exists(local_filename):
+        return local_filename
     r = requests.get(url, stream=True)
     with open(local_filename, 'wb') as f:
         for chunk in r.iter_content(chunk_size=1024):
