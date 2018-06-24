@@ -3,10 +3,10 @@ from lxml import html
 import requests as raw_requests
 import os
 from pprint import pprint
-import genanki
 import shutil
 from googletrans import Translator
 import hashlib
+import jinja2
 
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
@@ -14,7 +14,6 @@ from cachecontrol.caches.file_cache import FileCache
 CARDS = ".cards"
 CACHE = ".cache"
 TRANS = ".trans"
-NAME = 'finnish_traffic_signs.apkg'
 
 requests = CacheControl(
     raw_requests.Session(),
@@ -139,54 +138,42 @@ def get_photos(pk):
     return photos
 
 
+TEMPLATE = """
+<html>
+    <head>
+        <title>Finnish Traffic Signs</title>
+    </head>
+    <body>
+        {% for section in sections %}
+        <h1>{{section.title}}</h1>
+            {% for sign in section.signs %}
+                <div>
+                    <p>{{sign.title}}</p>
+                    <img src={{sign.image}} />
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </body>
+</html>
+"""
+
+
 def generate_package():
     if not os.path.exists(CARDS):
         os.mkdir(CARDS)
 
     os.chdir(CARDS)
 
-    model = genanki.Model(
-        MODEL_ID,
-        'Images with descriptions',
-        fields=[
-            {'name': 'Description'},
-            {'name': 'Image'},
-        ],
-        templates=[
-            {
-            'name': 'Description to Image',
-            'qfmt': '{{Description}}',
-            'afmt': '{{FrontSide}} <hr id=answer> {{Image}}',
-            },
-            {
-            'name': 'Image to description',
-            'qfmt': '{{Image}}',
-            'afmt': '{{FrontSide}} <hr id=answer> {{Description}}',
-            }
-        ]
-    )
-
-    deck = genanki.Deck(DECK_ID, "Finnish Traffic Signs")
-    images = []
+    sections = []
 
     for section in get_sections():
-        for photo in get_photos(section["id"]):
-            print(photo)
-            title = photo["title"]
-            image = download_file(photo["url"])
-            images.append(image)
-            deck.add_note(genanki.Note(
-                guid=photo["guid"],
-                model=model,
-                fields=[ title, '<img src="{}" />'.format(image) ],
-                tags=[section["title"]]
-            ))
+        sections.append({
+            "title": section["title"],
+            "signs": get_photos(section["id"])
+        })
 
-    package = genanki.Package(deck)
-    package.media_files = images
-    package.write_to_file(NAME)
-    if os.path.exists("../" + NAME):
-        os.remove("../" + NAME)
-    shutil.move(NAME, "..")
+    tpl = jinja2.Template(TEMPLATE)
+    with open("index.html", "w") as fil:
+        fil.write(tpl.render(sections))
 
 generate_package()

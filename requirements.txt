@@ -1,6 +1,6 @@
 requests
 lxml
-genanki
 CacheControl
 lockfile
 googletrans
+jinja2
