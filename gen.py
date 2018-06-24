@@ -1,10 +1,16 @@
 import json
 from lxml import html
-import requests
+import requests as raw_requests
 import os
 from pprint import pprint
 import genanki
 import md5
+
+from cachecontrol import CacheControl
+from cachecontrol.caches.file_cache import FileCache
+
+requests = CacheControl(raw_requests.Session(),
+                        cache=FileCache('.cache', forever=True))
 
 
 PATTERN = "https://www.flickr.com/photos/liikennevirasto/albums/"
