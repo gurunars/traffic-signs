@@ -9,8 +9,10 @@ import md5
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
 
-requests = CacheControl(raw_requests.Session(),
-                        cache=FileCache('.cache', forever=True))
+requests = CacheControl(
+    raw_requests.Session(),
+    cache=FileCache('.cache', forever=True)
+)
 
 
 PATTERN = "https://www.flickr.com/photos/liikennevirasto/albums/"
