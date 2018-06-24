@@ -147,7 +147,7 @@ def generate_package():
             images.append(image)
             deck.add_note(genanki.Note(
                 model=model,
-                fields=[ title.strip(), '<img src="{}">'.format(image) ],
+                fields=[ title.strip(), '<img src="{}" />'.format(image) ],
                 tags=[section["title"]]
             ))
 
