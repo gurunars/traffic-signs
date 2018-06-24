@@ -5,6 +5,7 @@ import os
 from pprint import pprint
 import genanki
 import shutil
+from googletrans import Translator
 
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
@@ -18,6 +19,7 @@ requests = CacheControl(
     cache=FileCache(CACHE, forever=True)
 )
 
+translator = Translator()
 
 PATTERN = "https://www.flickr.com/photos/liikennevirasto/albums/"
 DOMAIN = "https://www.liikennevirasto.fi"
@@ -99,9 +101,9 @@ def get_photos(pk):
         desc = item.get("description").get("_content")
         parts = desc.split("\n")
         if len(parts) >= 2:
-            title = parts[1]
+            title = translator.translate(parts[1])
         elif parts:
-            title = parts[0]
+            title = translator.translate(parts[0])
         else:
             title = "UNKNOWN"
         url = item.get("url_q")
