@@ -4,15 +4,18 @@ import requests as raw_requests
 import os
 from pprint import pprint
 import genanki
+import shutil
 
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
 
 os.chdir("cards")
 
+CACHE = ".cache"
+
 requests = CacheControl(
     raw_requests.Session(),
-    cache=FileCache('.cache', forever=True)
+    cache=FileCache(CACHE, forever=True)
 )
 
 
@@ -146,7 +149,9 @@ def generate_package():
 
     package = genanki.Package(deck)
     package.media_files = images
-    package.write_to_file('finnish_traffic_signs.apkg')
+    name = 'finnish_traffic_signs.apkg'
+    package.write_to_file(name)
+    shutil.move(name, "..")
 
 generate_package()
 
