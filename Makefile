@@ -1,12 +1,14 @@
 publish: archive
 	rm -rf /tmp/traffic-signs
 	cp -arv .cards /tmp/traffic-signs
-	cd /tmp/traffic-signs
-	git init
-	git checkout -b gh-pages
-	echo .cache > .gitignore
-	git add .
-	git ci -am init
+	cd /tmp/traffic-signs && \
+	git init && \
+	git checkout -b gh-pages && \
+	echo .cache > .gitignore && \
+	echo .venv > .gitignore && \
+	git add . && \
+	git ci -am init && \
+	git remote add origin git@github.com:gurunars/traffic-signs.git && \
 	git push origin gh-pages
 
 archive: .venv
