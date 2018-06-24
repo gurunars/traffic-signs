@@ -125,7 +125,7 @@ def generate_package():
             {
             'name': 'Image Card',
             'qfmt': '{{Description}}',
-            'afmt': '{{FrontSide}} <hr id=answer> <img src="{{Image}}">',
+            'afmt': '{{FrontSide}} <hr id=answer> {{Image}}',
             },
         ]
     )
@@ -143,7 +143,7 @@ def generate_package():
             images.append(image)
             deck.add_note(genanki.Note(
                 model=model,
-                fields=[ title, image ],
+                fields=[ title.strip(), '<img src="{}">'.format(image) ],
                 tags=[section["title"]]
             ))
 
@@ -151,6 +151,8 @@ def generate_package():
     package.media_files = images
     name = 'finnish_traffic_signs.apkg'
     package.write_to_file(name)
+    if os.path.exists("../" + name):
+        os.remove("../" + name)
     shutil.move(name, "..")
 
 generate_package()
