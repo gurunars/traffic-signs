@@ -101,14 +101,20 @@ def get_photos(pk):
         desc = item.get("description").get("_content")
         parts = desc.split("\n")
         if len(parts) >= 2:
-            title = translator.translate(parts[1])
+            title = parts[1]
         elif parts:
-            title = translator.translate(parts[0])
+            title = parts[0]
+        else:
+            title = None
+
+        if title and not title.startswith("<a href="):
+            title = translator.translate(title).text
         else:
             title = "UNKNOWN"
+
         url = item.get("url_q")
         photos.append(dict(
-            title=title,
+            title=title.strip(),
             url=url
         ))
     return photos
@@ -143,13 +149,11 @@ def generate_package():
         for photo in get_photos(section["id"]):
             print(photo)
             title = photo["title"]
-            if title.startswith("<a href="):
-                title = "UNKNOWN"
             image = download_file(photo["url"])
             images.append(image)
             deck.add_note(genanki.Note(
                 model=model,
-                fields=[ title.strip(), '<img src="{}" />'.format(image) ],
+                fields=[ title, '<img src="{}" />'.format(image) ],
                 tags=[section["title"]]
             ))
 
