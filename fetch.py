@@ -8,6 +8,7 @@ import genanki
 
 PATTERN = "https://www.flickr.com/photos/liikennevirasto/albums/"
 DOMAIN = "https://www.liikennevirasto.fi"
+UID = 78420311
 
 
 def fetch(path):
@@ -98,7 +99,7 @@ def get_photos(pk):
 import os
 os.chdir("cards")
 
-decks = []
+deck_specs = []
 for section in sections:
     fetched = []
     for photo in get_photos(section["id"]):
@@ -111,19 +112,28 @@ for section in sections:
             title=title,
             name=name
         ))
-    decks.append({
+    deck_specs.append({
         "title": section["title"],
         "cards": fetched
     })
 
 
-count = 1
-card_count = 1
-for deck in decks:
-    genanki.Deck(count, deck["title"])
-    count += 1
-    for card in deck["cards"]:
-        card_count += 1
+deck = genanki.Deck(UID, "Finnish Traffic Signs")
+images = []
+for deck_spec in deck_specs:
+    for card in deck_spec["cards"]:
+        deck.add_note(genanki.Note(
+            fields=[
+                card["title"],
+                '<img src="{}" />'.format(card["name"])
+            ],
+            tags=[deck_spec["title"]]
+        ))
+        images.append(card["name"])
+
+package = genanki.Package(deck)
+package.media_files = images
+package.write_to_file('finnish_traffic_signs.apkg')
 
 """
 import codecs
