@@ -5,11 +5,11 @@ publish: archive
 	git init && \
 	git checkout -b gh-pages && \
 	echo .cache > .gitignore && \
-	echo .venv > .gitignore && \
+	echo .trans > .gitignore && \
 	git add . && \
 	git ci -am init && \
 	git remote add origin git@github.com:gurunars/traffic-signs.git && \
-	git push origin gh-pages
+	git push origin gh-pages -f
 
 archive: .venv
 	.venv/bin/python gen.py
