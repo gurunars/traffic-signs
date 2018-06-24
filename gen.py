@@ -9,7 +9,10 @@ import shutil
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
 
-os.chdir("cards")
+if not os.path.exists(".cards"):
+    os.mkdir(".cards")
+
+os.chdir(".cards")
 
 CACHE = ".cache"
 NAME = 'finnish_traffic_signs.apkg'
