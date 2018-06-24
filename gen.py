@@ -35,9 +35,8 @@ def get_hash(string):
 
 
 def translate(string):
-    os.makedirs(os.path.join(CARDS, TRANS), exist_ok=True)
-    key = get_hash(string)
-    path = os.path.join(CARDS, TRANS, key)
+    os.makedirs(TRANS, exist_ok=True)
+    path = os.path.join(TRANS, get_hash(string))
     if os.path.exists(path):
         with open(path) as fil:
             return fil.read()
