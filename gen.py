@@ -6,12 +6,14 @@ from pprint import pprint
 import genanki
 import shutil
 from googletrans import Translator
+import hashlib
 
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
 
 CARDS = ".cards"
 CACHE = ".cache"
+TRANS = ".trans"
 NAME = 'finnish_traffic_signs.apkg'
 
 requests = CacheControl(
@@ -26,6 +28,23 @@ DOMAIN = "https://www.liikennevirasto.fi"
 # random.randrange(1 << 30, 1 << 31)
 DECK_ID = 1287472585
 MODEL_ID = 1180172397
+
+
+def get_hash(string):
+    return hashlib.sha224(string.encode('utf-8')).hexdigest()
+
+
+def translate(string):
+    os.makedirs(os.path.join(CARDS, TRANS), exist_ok=True)
+    key = get_hash(string)
+    path = os.path.join(CARDS, TRANS, key)
+    if os.path.exists(path):
+        with open(path) as fil:
+            return fil.read()
+    value = translator.translate(string).text
+    with open(path, "w") as fil:
+        fil.write(value)
+    return value
 
 
 def fetch(path):
@@ -108,7 +127,7 @@ def get_photos(pk):
             title = None
 
         if title and not title.startswith("<a href="):
-            title = translator.translate(title).text
+            title = translate(title)
         else:
             title = "UNKNOWN"
 
