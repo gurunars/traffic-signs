@@ -154,10 +154,15 @@ def generate_package():
         ],
         templates=[
             {
-            'name': 'Image Card',
+            'name': 'Description to Image',
             'qfmt': '{{Description}}',
             'afmt': '{{FrontSide}} <hr id=answer> {{Image}}',
             },
+            {
+            'name': 'Image to description',
+            'qfmt': '{{Image}}',
+            'afmt': '{{FrontSide}} <hr id=answer> {{Description}}',
+            }
         ]
     )
 
