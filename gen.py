@@ -114,6 +114,7 @@ def get_photos(pk):
 
         url = item.get("url_q")
         photos.append(dict(
+            guid=pk,
             title=title.strip(),
             url=url
         ))
@@ -152,6 +153,7 @@ def generate_package():
             image = download_file(photo["url"])
             images.append(image)
             deck.add_note(genanki.Note(
+                guid=photo["guid"],
                 model=model,
                 fields=[ title, '<img src="{}" />'.format(image) ],
                 tags=[section["title"]]
