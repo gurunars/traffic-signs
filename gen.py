@@ -4,10 +4,11 @@ import requests as raw_requests
 import os
 from pprint import pprint
 import genanki
-import md5
 
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
+
+os.chdir("cards")
 
 requests = CacheControl(
     raw_requests.Session(),
@@ -77,7 +78,7 @@ def get_sections():
 
 
 def get_photos(pk):
-    resp = requests.get("https://api.flickr.com/services/rest", {
+    resp = requests.get("https://api.flickr.com/services/rest", params={
         "method": "flickr.photosets.getPhotos",
         "api_key": "2f0e634b471fdb47446abcb9c5afebdc",
         "photoset_id": pk,
@@ -109,7 +110,6 @@ def get_photos(pk):
 
 
 def generate_package():
-    os.chdir("cards")
 
     model = genanki.Model(
         MODEL_ID,

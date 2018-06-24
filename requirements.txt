@@ -2,3 +2,4 @@ requests
 lxml
 genanki
 CacheControl
+lockfile
