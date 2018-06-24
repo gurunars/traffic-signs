@@ -1,7 +1,7 @@
 publish: archive
-	rm -rf /tmp/traffix-signs
-	cp -arv .cards /tmp/traffix-signs
-	cd /tmp/traffix-signs
+	rm -rf /tmp/traffic-signs
+	cp -arv .cards /tmp/traffic-signs
+	cd /tmp/traffic-signs
 	git init
 	git checkout -b gh-pages
 	echo .cache > .gitignore
