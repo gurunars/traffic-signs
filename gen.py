@@ -128,9 +128,9 @@ model = genanki.Model(
   ],
   templates=[
     {
-      'name': 'Card 1',
+      'name': 'Image Card',
       'qfmt': '{{Description}}',
-      'afmt': '{{FrontSide}} <hr id=answer> <img src="{{Image}}" />',
+      'afmt': '{{FrontSide}} <hr id=answer> <img src="{{Image}}">',
     },
   ])
 
