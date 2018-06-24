@@ -105,7 +105,6 @@ deck_specs = []
 for section in sections:
     fetched = []
     for photo in get_photos(section["id"]):
-        print(photo)
         title = photo["title"]
         if title.startswith("<a href="):
             title = "UNKNOWN"
@@ -140,6 +139,7 @@ deck = genanki.Deck(DECK_ID, "Finnish Traffic Signs")
 images = []
 for deck_spec in deck_specs:
     for card in deck_spec["cards"]:
+        print(card)
         deck.add_note(genanki.Note(
             model=model,
             fields=[
