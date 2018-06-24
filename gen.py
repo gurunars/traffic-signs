@@ -12,6 +12,7 @@ from cachecontrol.caches.file_cache import FileCache
 os.chdir("cards")
 
 CACHE = ".cache"
+NAME = 'finnish_traffic_signs.apkg'
 
 requests = CacheControl(
     raw_requests.Session(),
@@ -149,17 +150,9 @@ def generate_package():
 
     package = genanki.Package(deck)
     package.media_files = images
-    name = 'finnish_traffic_signs.apkg'
-    package.write_to_file(name)
-    if os.path.exists("../" + name):
-        os.remove("../" + name)
-    shutil.move(name, "..")
+    package.write_to_file(NAME)
+    if os.path.exists("../" + NAME):
+        os.remove("../" + NAME)
+    shutil.move(NAME, "..")
 
 generate_package()
-
-"""
-import codecs
-payload = json.dumps(deck, ensure_ascii=False, indent=2)
-with codecs.open("index.json", "w", encoding="utf-8") as fil:
-    fil.write(payload)
-"""
