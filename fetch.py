@@ -8,7 +8,9 @@ import genanki
 
 PATTERN = "https://www.flickr.com/photos/liikennevirasto/albums/"
 DOMAIN = "https://www.liikennevirasto.fi"
-UID = 78420311
+# random.randrange(1 << 30, 1 << 31)
+DECK_ID = 1287472585
+MODEL_ID = 1180172397
 
 
 def fetch(path):
@@ -118,14 +120,31 @@ for section in sections:
     })
 
 
-deck = genanki.Deck(UID, "Finnish Traffic Signs")
+model = genanki.Model(
+  MODEL_ID,
+  'Images with descriptions',
+  fields=[
+    {'name': 'Description'},
+    {'name': 'Image'},
+  ],
+  templates=[
+    {
+      'name': 'Card 1',
+      'qfmt': '{{Description}}',
+      'afmt': '{{FrontSide}} <hr id=answer> <img src="{{Image}}" />',
+    },
+  ])
+
+
+deck = genanki.Deck(DECK_ID, "Finnish Traffic Signs")
 images = []
 for deck_spec in deck_specs:
     for card in deck_spec["cards"]:
         deck.add_note(genanki.Note(
+            model=model,
             fields=[
                 card["title"],
-                '<img src="{}" />'.format(card["name"])
+                card["name"]
             ],
             tags=[deck_spec["title"]]
         ))
