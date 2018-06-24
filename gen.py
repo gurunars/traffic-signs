@@ -127,14 +127,11 @@ def generate_package():
             title = photo["title"]
             if title.startswith("<a href="):
                 title = "UNKNOWN"
-            name = download_file(photo["url"])
-            images.append(name)
+            image = download_file(photo["url"])
+            images.append(image)
             deck.add_note(genanki.Note(
                 model=model,
-                fields=[
-                    title,
-                    name
-                ],
+                fields=[ title, image ],
                 tags=[section["title"]]
             ))
 
