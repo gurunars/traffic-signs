@@ -37,34 +37,34 @@ def download_file(url):
     return local_filename
 
 
-tree = fetch("/web/en/road-network/traffic-signs")
+def get_sections():
+    tree = fetch("/web/en/road-network/traffic-signs")
+    sections = tree.xpath('//div[@class="section-content"]')
+    links = []
 
-sections = tree.xpath('//div[@class="section-content"]')
+    for section in sections:
+        links += section.xpath('*/a')
+        links += section.xpath('a')
 
-links = []
+    links = [
+        {
+            "title": link.xpath("text()")[0],
+            "url": link.xpath("@href")[0]
+        }
+        for link in links
+    ]
 
-for section in sections:
-    links += section.xpath('*/a')
-    links += section.xpath('a')
-
-links = [
-    {
-        "title": link.xpath("text()")[0],
-        "url": link.xpath("@href")[0]
-    }
-    for link in links
-]
-
-sections = []
-for link in links:
-    page = fetch(link["url"])
-    sections.append({
-        "title": link["title"],
-        "id": [
-            remove_prefix(href, PATTERN)
-            for href in page.xpath("//a/@href") if href.startswith(PATTERN)
-        ][0]
-    })
+    sections = []
+    for link in links:
+        page = fetch(link["url"])
+        sections.append({
+            "title": link["title"],
+            "id": [
+                remove_prefix(href, PATTERN)
+                for href in page.xpath("//a/@href") if href.startswith(PATTERN)
+            ][0]
+        })
+    return sections
 
 
 def get_photos(pk):
@@ -98,61 +98,49 @@ def get_photos(pk):
         ))
     return photos
 
-import os
-os.chdir("cards")
 
-deck_specs = []
-for section in sections:
-    fetched = []
-    for photo in get_photos(section["id"]):
-        title = photo["title"]
-        if title.startswith("<a href="):
-            title = "UNKNOWN"
-        name = download_file(photo["url"])
-        fetched.append(dict(
-            title=title,
-            name=name
-        ))
-    deck_specs.append({
-        "title": section["title"],
-        "cards": fetched
-    })
+def generate_package():
+    os.chdir("cards")
 
+    model = genanki.Model(
+        MODEL_ID,
+        'Images with descriptions',
+        fields=[
+            {'name': 'Description'},
+            {'name': 'Image'},
+        ],
+        templates=[
+            {
+            'name': 'Image Card',
+            'qfmt': '{{Description}}',
+            'afmt': '{{FrontSide}} <hr id=answer> <img src="{{Image}}">',
+            },
+        ]
+    )
 
-model = genanki.Model(
-  MODEL_ID,
-  'Images with descriptions',
-  fields=[
-    {'name': 'Description'},
-    {'name': 'Image'},
-  ],
-  templates=[
-    {
-      'name': 'Image Card',
-      'qfmt': '{{Description}}',
-      'afmt': '{{FrontSide}} <hr id=answer> <img src="{{Image}}">',
-    },
-  ])
+    deck = genanki.Deck(DECK_ID, "Finnish Traffic Signs")
+    images = []
 
+    for section in get_sections():
+        for photo in get_photos(section["id"]):
+            print(photo)
+            title = photo["title"]
+            if title.startswith("<a href="):
+                title = "UNKNOWN"
+            name = download_file(photo["url"])
+            images.append(name)
+            deck.add_note(genanki.Note(
+                model=model,
+                fields=[
+                    title,
+                    name
+                ],
+                tags=[section["title"]]
+            ))
 
-deck = genanki.Deck(DECK_ID, "Finnish Traffic Signs")
-images = []
-for deck_spec in deck_specs:
-    for card in deck_spec["cards"]:
-        print(card)
-        deck.add_note(genanki.Note(
-            model=model,
-            fields=[
-                card["title"],
-                card["name"]
-            ],
-            tags=[deck_spec["title"]]
-        ))
-        images.append(card["name"])
-
-package = genanki.Package(deck)
-package.media_files = images
-package.write_to_file('finnish_traffic_signs.apkg')
+    package = genanki.Package(deck)
+    package.media_files = images
+    package.write_to_file('finnish_traffic_signs.apkg')
 
 """
 import codecs
