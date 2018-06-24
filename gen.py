@@ -133,7 +133,7 @@ def get_photos(pk):
         photos.append(dict(
             guid=pk,
             title=title.strip(),
-            url=url
+            image=url
         ))
     return photos
 
@@ -148,9 +148,10 @@ TEMPLATE = """
         <h1>{{section.title}}</h1>
             {% for sign in section.signs %}
                 <div>
-                    <p>{{sign.title}}</p>
                     <img src={{sign.image}} />
+                    <p>{{sign.title}}</p>
                 </div>
+                <hr/>
             {% endfor %}
         {% endfor %}
     </body>
@@ -174,6 +175,6 @@ def generate_package():
 
     tpl = jinja2.Template(TEMPLATE)
     with open("index.html", "w") as fil:
-        fil.write(tpl.render(sections))
+        fil.write(tpl.render({"sections": sections}))
 
 generate_package()
