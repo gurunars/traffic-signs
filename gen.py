@@ -9,11 +9,7 @@ import shutil
 from cachecontrol import CacheControl
 from cachecontrol.caches.file_cache import FileCache
 
-if not os.path.exists(".cards"):
-    os.mkdir(".cards")
-
-os.chdir(".cards")
-
+CARDS = ".cards"
 CACHE = ".cache"
 NAME = 'finnish_traffic_signs.apkg'
 
@@ -117,6 +113,10 @@ def get_photos(pk):
 
 
 def generate_package():
+    if not os.path.exists(CARDS):
+        os.mkdir(CARDS)
+
+    os.chdir(CARDS)
 
     model = genanki.Model(
         MODEL_ID,
