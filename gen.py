@@ -4,6 +4,7 @@ import requests
 import os
 from pprint import pprint
 import genanki
+import md5
 
 
 PATTERN = "https://www.flickr.com/photos/liikennevirasto/albums/"
@@ -138,6 +139,8 @@ def generate_package():
     package = genanki.Package(deck)
     package.media_files = images
     package.write_to_file('finnish_traffic_signs.apkg')
+
+generate_package()
 
 """
 import codecs
