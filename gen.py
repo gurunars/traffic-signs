@@ -161,13 +161,15 @@ TEMPLATE = """
         }
 
         .section div {
-            float: left;
-            width: 90px;
-            height: 90px;
+            position: relative;
+            display: inline-block;
+            width: 200px;
+            height: 200px;
             margin: 10px;
+            padding: 5px;
+            border: 1px solid black;
         }
         .section div img {
-            float: left;
             max-width: 80px;
             max-height: 80px;
             margin-bottom: 5px;
