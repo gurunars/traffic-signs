@@ -131,16 +131,36 @@ TEMPLATE = """
     <head>
         <title>Finnish Traffic Signs</title>
     </head>
+    <style>
+        .section {
+            position: relative;
+        }
+
+        .section div {
+            float: left;
+            width: 90px;
+            height: 90px;
+            margin: 10px;
+        }
+        .section div img {
+            float: left;
+            max-width: 80px;
+            max-height: 80px;
+            margin-bottom: 5px;
+        }
+    </style>
     <body>
         {% for section in sections %}
         <h1>{{section.title}}</h1>
-            {% for sign in section.signs %}
-                <div>
-                    <img src={{sign.image}} />
-                    <p>{{sign.title}}</p>
-                </div>
-                <hr/>
-            {% endfor %}
+            <div class="section">
+                {% for sign in section.signs %}
+                    <div>
+                        <img src={{sign.image}} />
+                        <p>{{sign.title}}</p>
+                    </div>
+                    <hr/>
+                {% endfor %}
+            </div>
         {% endfor %}
     </body>
 </html>
