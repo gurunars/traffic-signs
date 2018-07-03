@@ -57,18 +57,6 @@ def remove_suffix(string, suffix):
     return string[:-len(suffix)] if string.endswith(suffix) else string
 
 
-def download_file(url):
-    local_filename = url.split('/')[-1]
-    if os.path.exists(local_filename):
-        return local_filename
-    r = requests.get(url, stream=True)
-    with open(local_filename, 'wb') as f:
-        for chunk in r.iter_content(chunk_size=1024):
-            if chunk:
-                f.write(chunk)
-    return local_filename
-
-
 def get_sections():
     tree = fetch("/web/en/road-network/traffic-signs")
     sections = tree.xpath('//div[@class="section-content"]')
@@ -104,7 +92,7 @@ def get_photos(pk):
         "method": "flickr.photosets.getPhotos",
         "api_key": "2f0e634b471fdb47446abcb9c5afebdc",
         "photoset_id": pk,
-        "extras": "description,url_m",
+        "extras": "description,url_m,url_o,url_q",
         "format": "json"
     })
 
@@ -129,7 +117,7 @@ def get_photos(pk):
         else:
             title = "UNKNOWN"
 
-        url = item.get("url_m")
+        url = item.get("url_m") or item.get("url_o") or item.get("url_q")
         photos.append(dict(
             guid=pk,
             title=title.strip(),
