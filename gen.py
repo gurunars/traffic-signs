@@ -104,7 +104,7 @@ def get_photos(pk):
         "method": "flickr.photosets.getPhotos",
         "api_key": "2f0e634b471fdb47446abcb9c5afebdc",
         "photoset_id": pk,
-        "extras": "description,url_q",
+        "extras": "description,url_m",
         "format": "json"
     })
 
@@ -129,7 +129,7 @@ def get_photos(pk):
         else:
             title = "UNKNOWN"
 
-        url = item.get("url_q")
+        url = item.get("url_m")
         photos.append(dict(
             guid=pk,
             title=title.strip(),
