@@ -4,6 +4,7 @@ publish: archive
 	cd /tmp/traffic-signs && \
 	git init && \
 	git checkout -b gh-pages && \
+	echo *.json >> .gitignore && \
 	echo .cache >> .gitignore && \
 	echo .trans >> .gitignore && \
 	git add . && \
