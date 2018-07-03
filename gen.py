@@ -123,7 +123,7 @@ def get_photos(pk):
             title = parts[0]
         else:
             title = None
-
+        print("Processing photo {}".format(title))
         if title and not title.startswith("<a href="):
             title = translate(title)
         else:
@@ -168,6 +168,7 @@ def generate_package():
     sections = []
 
     for section in get_sections():
+        print("Processing section {}".format(section["title"]))
         sections.append({
             "title": section["title"],
             "signs": get_photos(section["id"])
