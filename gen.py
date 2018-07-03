@@ -57,6 +57,28 @@ def remove_suffix(string, suffix):
     return string[:-len(suffix)] if string.endswith(suffix) else string
 
 
+def with_json_cache(function):
+    def wrapper(*args, **kwargs):
+        kw = sorted(kwargs.items())
+        key = get_hash(function.__name__ + str(args) + str(kw))
+
+        name = key + ".json"
+
+        if os.path.exists(name):
+            with open(name) as fil:
+                return json.load(fil)
+
+        data = function(*args, **kwargs)
+
+        with open(name, "w") as fil:
+            json.dump(data, fil)
+
+        return data
+
+    return wrapper
+
+
+@with_json_cache
 def get_sections():
     tree = fetch("/web/en/road-network/traffic-signs")
     sections = tree.xpath('//div[@class="section-content"]')
@@ -84,9 +106,11 @@ def get_sections():
                 for href in page.xpath("//a/@href") if href.startswith(PATTERN)
             ][0]
         })
+
     return sections
 
 
+@with_json_cache
 def get_photos(pk):
     resp = requests.get("https://api.flickr.com/services/rest", params={
         "method": "flickr.photosets.getPhotos",
@@ -158,7 +182,6 @@ TEMPLATE = """
                         <img src={{sign.image}} />
                         <p>{{sign.title}}</p>
                     </div>
-                    <hr/>
                 {% endfor %}
             </div>
         {% endfor %}
